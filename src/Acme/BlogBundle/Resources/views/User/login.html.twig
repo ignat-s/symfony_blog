@@ -1,0 +1,32 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{  'Login' | trans({}, 'AcmeBlogBundle') }}{% endblock %}
+{% block stylesheets %}
+    <style type="text/css">
+        label { text-align: right }
+        .error { color: red }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    {{ 'Not a user? Sign Up' | trans({'%link%': path('signup')}, 'AcmeBlogBundle') | raw }}
+    <h2>{{ 'Login' | trans({}, 'AcmeBlogBundle') }}</h2>
+
+    {% if error %}
+        <div class="error">{{ error.message }}</div>
+    {% endif %}
+
+    <form action="{{ path('_login_check') }}" method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="_username" value="{{ last_username }}" required="required"/>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="_password" required="required"/>
+
+        <input type="checkbox" id="remember_me" name="_remember_me" checked />
+        <label for="remember_me">Keep me logged in</label>
+
+        <input type="submit" value="Login" />
+    </form>
+{% endblock %}

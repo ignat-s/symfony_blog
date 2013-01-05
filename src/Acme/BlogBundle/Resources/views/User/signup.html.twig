@@ -1,0 +1,20 @@
+{% extends '::base.html.twig' %}
+
+{% block title %} {{ 'Sign up' | trans }}{% endblock %}
+{% block stylesheets %}
+    <style type="text/css">
+        .label { text-align: right }
+        .error { color: red }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    {{ 'Already a user? Login' | trans({'%link%': path('login')}, 'AcmeBlogBundle') | raw }}
+    <h2>{{ 'Sign up' | trans({}, 'AcmeBlogBundle') }}</h2>
+    <form action="{{ path('signup') }}" method="post" {{ form_enctype(form) }}>
+        {{ form_widget(form) }}
+        <input type="submit" value="{{ 'Submit' | trans({}, 'AcmeBlogBundle') }}" />
+    </form>
+
+{% endblock %}

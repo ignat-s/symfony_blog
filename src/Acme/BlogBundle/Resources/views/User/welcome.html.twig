@@ -1,0 +1,14 @@
+{% extends '::base.html.twig' %}
+
+{% block title %} {{ 'Welcome' | trans({}, 'AcmeBlogBundle') }}{% endblock %}
+
+{% block body %}
+
+    <h2>{{ 'Welcome, %username%!' | trans({'%username%': app.user.username}, 'AcmeBlogBundle') }}</h2>
+    <ul>
+        <li><a href="{{ path('index') }}">Goto Blog Home</a></li>
+        <li><a href="/newpost">Create a New Post</a></li>
+        <li><a href="{{ path('_logout') }}">Logout</a></li>
+    </ul>
+
+{% endblock %}

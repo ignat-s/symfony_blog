@@ -1,0 +1,21 @@
+<?php
+
+namespace Acme\BlogBundle\Document;
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+
+/**
+ * @MongoDB\Document
+ */
+class Post
+{
+    /**
+     * @MongoDB\Id
+     */
+    private $_id;
+
+    /**
+     * @MongoDB\String
+     */
+    private $_body;
+}
