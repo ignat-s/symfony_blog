@@ -64,7 +64,7 @@ Open URL http://symfony-blog.local/app_dev.php/ (your URL might be different). Y
 Running tests
 -------------
 
-You need installed [PHPUnit][5].
+You need installed [PHPUnit][4].
 
 Create app/phpunit.xml file from app/phpunit.xml.dist. You can run all tests using command.
 
