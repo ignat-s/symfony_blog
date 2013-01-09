@@ -5,13 +5,15 @@ namespace Acme\BlogBundle\Controller;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use JMS\SecurityExtraBundle\Annotation\Secure;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use JMS\SecurityExtraBundle\Annotation\Secure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Routing\Router;
+use Doctrine\Common\Persistence\ObjectManager;
+use Acme\BlogBundle\Model\UserManager;
 use Acme\BlogBundle\Form\Type\RegistrationType;
 use Acme\BlogBundle\Form\Model\Registration;
 use Acme\BlogBundle\Document\User;
@@ -22,9 +24,8 @@ class UserController extends Controller
      * @Route("/login", name="login")
      * @Template("AcmeBlogBundle:User:login.html.twig")
      */
-    public function loginAction()
+    public function loginAction(Request $request)
     {
-        $request = $this->getRequest();
         $session = $request->getSession();
 
         // get the login error if there is one
@@ -50,11 +51,11 @@ class UserController extends Controller
      */
     public function signUpAction(Request $request)
     {
-        /** @var \Acme\BlogBundle\Model\UserManager $userManager */
+        /** @var UserManager $userManager */
         $userManager = $this->get('acme_blog.user_manager');
-        /** @var \Doctrine\Common\Persistence\ObjectManager $objectManager */
-        $objectManager = $this->get('doctrine_mongodb')->getManager();
-        /** @var \Symfony\Component\Routing\Router $router */
+        /** @var ObjectManager $objectManager */
+        $objectManager = $this->get('acme_blog.object_manager');
+        /** @var Router $router */
         $router = $this->get('router');
 
         $user = $userManager->createUser();

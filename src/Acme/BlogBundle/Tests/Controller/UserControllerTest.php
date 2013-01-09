@@ -6,7 +6,7 @@ use Acme\BlogBundle\Test\WebTestCase;
 
 class UserControllerTest extends WebTestCase
 {
-    public function testSignUp()
+    public function testSignUpAction()
     {
         $client = static::createClient();
 
@@ -17,21 +17,17 @@ class UserControllerTest extends WebTestCase
         $this->assertCrawlerHasNode(
             'form input[type="text"][required="required"][name="registration[user][username]"]'
         );
-        $this->assertCrawlerHasNode(
-            'form input[type="email"][required="required"][name="registration[user][email]"]'
-        );
+        $this->assertCrawlerHasNode('form input[type="email"][required="required"][name="registration[user][email]"]');
         $this->assertCrawlerHasNode(
             'form input[type="password"][required="required"][name="registration[user][plainPassword][password]"]'
         );
         $this->assertCrawlerHasNode(
             'form input[type="password"][required="required"][name="registration[user][plainPassword][confirm]"]'
         );
-        $this->assertCrawlerHasNode(
-            'form input[type="checkbox"][required="required"][name="registration[terms]"]'
-        );
+        $this->assertCrawlerHasNode('form input[type="checkbox"][required="required"][name="registration[terms]"]');
     }
 
-    public function testSignUpNewUser()
+    public function testSignUpActionSubmitNewUser()
     {
         $client = static::createClient();
 
@@ -59,12 +55,12 @@ class UserControllerTest extends WebTestCase
     }
 
     /**
-     * @dataProvider signUpErrorsDataProvider
+     * @dataProvider signUpActionSubmitErrorsDataProvider
      * @param array $signInData
      * @param array|string $errorMessages
      * @return void
      */
-    public function testSignUpErrors(array $signInData, $errorMessages)
+    public function testSignUpActionSubmitErrors(array $signInData, $errorMessages)
     {
         $signInData = array_merge(
             array(
@@ -92,7 +88,7 @@ class UserControllerTest extends WebTestCase
         }
     }
 
-    public function signUpErrorsDataProvider()
+    public function signUpActionSubmitErrorsDataProvider()
     {
         return array(
             'username is required' => array(
@@ -129,9 +125,9 @@ class UserControllerTest extends WebTestCase
     }
 
     /**
-     * @dataProvider loginDataProvider
+     * @dataProvider loginActionDataProvider
      */
-    public function testLogin($username, $password, $expectedNodes)
+    public function testLoginAction($username, $password, $expectedNodes)
     {
         $client = static::createClient();
 
@@ -155,7 +151,7 @@ class UserControllerTest extends WebTestCase
         $this->assertCrawlerHasNode($expectedNodes);
     }
 
-    public function loginDataProvider()
+    public function loginActionDataProvider()
     {
         return array(
             'admin login' => array(

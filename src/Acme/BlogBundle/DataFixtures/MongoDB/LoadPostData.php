@@ -5,10 +5,10 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Acme\BlogBundle\Document\User;
-use Acme\BlogBundle\Model\UserManager;
+use Acme\BlogBundle\Model\PostManager;
+use Acme\BlogBundle\Document\Post;
 
-class LoadUserData implements FixtureInterface, ContainerAwareInterface
+class LoadPostData implements FixtureInterface, ContainerAwareInterface
 {
     /**
      * @var ContainerInterface
@@ -16,23 +16,25 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
     private $container;
 
     /**
-     * @var UserManager
+     * @var PostManager
      */
-    private $userManager;
+    private $postManager;
 
     /**
      * {@inheritDoc}
      */
     public function load(ObjectManager $manager)
     {
-        $userAdmin = $this->userManager->createUser();
-        $userAdmin->setUsername('admin');
-        $userAdmin->setEmail('admin@example.com');
-        $userAdmin->addRole(User::ROLE_ADMIN);
-        $userAdmin->setPlainPassword('adminpass');
-        $this->userManager->updatePassword($userAdmin);
+        $post = new Post();
+        $post->setTitle('Unit testing');
+        $post->setBody(
+            'The goal of unit testing is to isolate each part '
+            . 'of the program and show that the individual parts are correct.'
+        );
 
-        $manager->persist($userAdmin);
+        $this->postManager->updatePermalink($post);
+
+        $manager->persist($post);
         $manager->flush();
     }
 
@@ -42,6 +44,6 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
-        $this->userManager = $this->container->get('acme_blog.user_manager');
+        $this->postManager = $this->container->get('acme_blog.post_manager');
     }
 }

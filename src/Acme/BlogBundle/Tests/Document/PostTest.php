@@ -16,23 +16,38 @@ class PostTest extends \PHPUnit_Framework_TestCase
         $this->post = new Post();
     }
 
-    public function testId()
+    public function testConstructorDefaultValues()
     {
         $this->assertNull($this->post->getId());
+        $this->assertNull($this->post->getTitle());
+        $this->assertNull($this->post->getBody());
+    }
 
-        $propertyReflection = new \ReflectionProperty($this->post, 'id');
-        $propertyReflection->setAccessible(true);
-        $id = new \MongoId('test');
-        $propertyReflection->setValue($this->post, $id);
-
+    public function testId()
+    {
+        $id = 'test';
+        $this->post->setId($id);
         $this->assertEquals($id, $this->post->getId());
+    }
+
+    public function testTitle()
+    {
+        $title = 'title';
+        $this->post->setTitle($title);
+        $this->assertEquals($title, $this->post->getTitle());
     }
 
     public function testBody()
     {
-        $this->assertNull($this->post->getBody());
+        $body = 'text';
+        $this->post->setBody($body);
+        $this->assertEquals($body, $this->post->getBody());
+    }
 
-        $this->post->setBody('text');
-        $this->assertEquals('text', $this->post->getBody());
+    public function testPermalink()
+    {
+        $permalink = 'permalink';
+        $this->post->setPermalink($permalink);
+        $this->assertEquals($permalink, $this->post->getPermalink());
     }
 }

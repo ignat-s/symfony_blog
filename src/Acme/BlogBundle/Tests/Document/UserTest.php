@@ -39,32 +39,35 @@ class UserTest extends \PHPUnit_Framework_TestCase
 
     public function testUsername()
     {
-        $this->user->setUsername('tony');
-        $this->assertEquals('tony', $this->user->getUsername());
+        $username = 'tony';
+        $this->user->setUsername($username);
+        $this->assertEquals($username, $this->user->getUsername());
     }
 
     public function testEmail()
     {
-        $this->user->setEmail('tony@mail.org');
-        $this->assertEquals('tony@mail.org', $this->user->getEmail());
+        $email = 'tony@mail.org';
+        $this->user->setEmail($email);
+        $this->assertEquals($email, $this->user->getEmail());
     }
 
     public function testPassword()
     {
-        $this->user->setPassword(sha1('pass'));
-        $this->assertEquals(sha1('pass'), $this->user->getPassword());
+        $password = sha1('pass');
+        $this->user->setPassword($password);
+        $this->assertEquals($password, $this->user->getPassword());
     }
 
     public function testPlainPassword()
     {
-        $this->user->setPlainPassword('pass');
-        $this->assertEquals('pass', $this->user->getPlainPassword());
+        $plainPassword = 'pass';
+        $this->user->setPlainPassword($plainPassword);
+        $this->assertEquals($plainPassword, $this->user->getPlainPassword());
     }
 
     public function testEraseCredentials()
     {
         $this->user->setPlainPassword('pass');
-        $this->assertNotEmpty($this->user->getPlainPassword());
         $this->user->eraseCredentials();
         $this->assertEmpty($this->user->getPlainPassword());
     }
