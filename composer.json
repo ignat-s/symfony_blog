@@ -20,7 +20,10 @@
         "jms/di-extra-bundle": "1.1.*",
         "kriswallsmith/assetic": "1.1.*@dev",
         "doctrine/mongodb-odm-bundle": "3.0.*",
-        "doctrine/doctrine-fixtures-bundle": "dev-master"
+        "doctrine/doctrine-fixtures-bundle": "dev-master",
+        "mopa/bootstrap-bundle": "dev-master",
+        "twitter/bootstrap": "v2.1.0",
+        "leafo/lessphp": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [
@@ -40,5 +43,17 @@
         "symfony-app-dir": "app",
         "symfony-web-dir": "web"
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "repositories": [{
+        "type": "package",
+        "package": {
+            "name": "twitter/bootstrap",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twitter/bootstrap",
+                "reference": "v2.1.0"
+            }
+        }
+    }]
 }
