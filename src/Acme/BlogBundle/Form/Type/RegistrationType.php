@@ -16,8 +16,7 @@ class RegistrationType extends AbstractType
             'checkbox',
             array(
                 'property_path' => 'termsAccepted',
-                'label' => 'form.terms',
-                'translation_domain' => 'AcmeBlogBundle'
+                'label' => 'form.terms'
             )
         );
     }
@@ -27,6 +26,7 @@ class RegistrationType extends AbstractType
         $resolver->setDefaults(
             array(
                 'validation_groups' => array('Default', 'registration'),
+                'translation_domain' => 'AcmeBlogBundle',
             )
         );
     }

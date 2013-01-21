@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -51,6 +52,8 @@ class UserController extends Controller
      */
     public function signUpAction(Request $request)
     {
+        /** @var Session $session */
+        $session = $this->get('session');
         /** @var UserManager $userManager */
         $userManager = $this->get('acme_blog.user_manager');
         /** @var ObjectManager $objectManager */
@@ -74,23 +77,16 @@ class UserController extends Controller
 
                 $this->authenticateUser($user);
 
-                return new RedirectResponse($router->generate('welcome'));
+                $session->getFlashBag()->add('success', 'Welcome, you have successfully signed up!');
+                return new RedirectResponse($router->generate('posts_index'));
+            } else {
+                $session->getFlashBag()->add('error', 'Sorry, sign up failed.');
             }
         }
 
         return array(
             'form' => $form->createView()
         );
-    }
-
-    /**
-     * @Route("/welcome", name="welcome")
-     * @Secure(roles="ROLE_USER")
-     * @Template()
-     */
-    public function welcomeAction()
-    {
-        return array();
     }
 
     /**

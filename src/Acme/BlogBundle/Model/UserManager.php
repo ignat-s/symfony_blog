@@ -33,8 +33,8 @@ class UserManager implements UserProviderInterface
         $class = 'Acme\BlogBundle\Document\User'
     ) {
         $this->repository = $repository;
-        $this->class = $class;
         $this->encoderFactory = $encoderFactory;
+        $this->class = $class;
     }
 
     public function createUser()

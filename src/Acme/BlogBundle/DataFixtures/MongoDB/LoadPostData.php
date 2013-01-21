@@ -3,12 +3,15 @@ namespace Acme\HelloBundle\DataFixtures\ORM;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Acme\BlogBundle\Model\PostManager;
 use Acme\BlogBundle\Document\Post;
+use Acme\BlogBundle\Document\Tag;
 
-class LoadPostData implements FixtureInterface, ContainerAwareInterface
+class LoadPostData extends AbstractFixture implements FixtureInterface, ContainerAwareInterface, OrderedFixtureInterface
 {
     /**
      * @var ContainerInterface
@@ -31,6 +34,10 @@ class LoadPostData implements FixtureInterface, ContainerAwareInterface
             'The goal of unit testing is to isolate each part '
             . 'of the program and show that the individual parts are correct.'
         );
+        $post->addTag('TDD');
+        $post->addTag('unit testing');
+
+        $post->setAuthor($this->getReference('admin-user'));
 
         $this->postManager->updatePermalink($post);
 
@@ -45,5 +52,13 @@ class LoadPostData implements FixtureInterface, ContainerAwareInterface
     {
         $this->container = $container;
         $this->postManager = $this->container->get('acme_blog.post_manager');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOrder()
+    {
+        return 2;
     }
 }

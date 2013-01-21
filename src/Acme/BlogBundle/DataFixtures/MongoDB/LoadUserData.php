@@ -3,12 +3,14 @@ namespace Acme\HelloBundle\DataFixtures\ORM;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Acme\BlogBundle\Document\User;
 use Acme\BlogBundle\Model\UserManager;
 
-class LoadUserData implements FixtureInterface, ContainerAwareInterface
+class LoadUserData extends AbstractFixture implements FixtureInterface, ContainerAwareInterface, OrderedFixtureInterface
 {
     /**
      * @var ContainerInterface
@@ -34,6 +36,8 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
 
         $manager->persist($userAdmin);
         $manager->flush();
+
+        $this->addReference('admin-user', $userAdmin);
     }
 
     /**
@@ -43,5 +47,13 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
     {
         $this->container = $container;
         $this->userManager = $this->container->get('acme_blog.user_manager');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOrder()
+    {
+        return 1;
     }
 }

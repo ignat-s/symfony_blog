@@ -13,15 +13,12 @@ class UserType extends AbstractType
         $builder->add(
             'username',
             'text',
-            array('label' => 'form.username', 'translation_domain' => 'AcmeBlogBundle')
+            array('label' => 'form.username')
         );
         $builder->add(
             'email',
             'email',
-            array(
-                'label' => 'form.email',
-                'translation_domain' => 'AcmeBlogBundle'
-            )
+            array('label' => 'form.email')
         );
         $builder->add(
             'plainPassword',
@@ -30,7 +27,6 @@ class UserType extends AbstractType
                 'first_name' => 'password',
                 'second_name' => 'confirm',
                 'type' => 'password',
-                'options' => array('translation_domain' => 'AcmeBlogBundle'),
                 'first_options' => array('label' => 'form.password'),
                 'second_options' => array('label' => 'form.password_confirmation'),
                 'invalid_message' => 'form.password.mismatch',
@@ -43,6 +39,7 @@ class UserType extends AbstractType
         $resolver->setDefaults(
             array(
                 'data_class' => 'Acme\BlogBundle\Document\User',
+                'translation_domain' => 'AcmeBlogBundle',
             )
         );
     }

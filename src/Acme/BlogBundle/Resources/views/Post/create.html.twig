@@ -2,12 +2,23 @@
 
 {% block title %} {{ 'Create a new post' | trans({}, 'AcmeBlogBundle') }}{% endblock %}
 
-{% block body %}
+{% block headline %}
+    {{ 'Create a new post' | trans({}, 'AcmeBlogBundle') }}
+{% endblock %}
 
-    <h2>{{ 'Create a new post' | trans({}, 'AcmeBlogBundle') }}</h2>
-    <form action="{{ path('post_create') }}" method="post" {{ form_enctype(form) }}>
-        {{ form_widget(form) }}
-        <input type="submit" value="{{ 'Submit' | trans({}, 'AcmeBlogBundle') }}" />
-    </form>
-
+{% block content %}
+    <div class="span12">
+        <form action="{{ path('post_create') }}" method="post" {{ form_enctype(form) }}>
+            {{ form_errors(form) }}
+            {{ form_row(form.title, {'attr': {'class': 'input-block-level'} } ) }}
+            {{ form_row(form.body, {'attr': {'class': 'input-block-level', 'rows': 10} } ) }}
+            {{ form_row(form.tagsString, {'attr': {'class': 'input-block-level'} } ) }}
+            {{ form_row(form.publicationDate) }}
+            {{ form_rest(form) }}
+            <div class="form-actions">
+                <input type="submit" class="btn btn-primary" value="{{ 'Submit' | trans({}, 'AcmeBlogBundle') }}" />
+                <button type="reset" class="btn">Cancel</button>
+            </div>
+        </form>
+    </div>
 {% endblock %}

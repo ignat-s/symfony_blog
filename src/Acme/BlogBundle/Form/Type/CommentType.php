@@ -6,29 +6,24 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class PostType extends AbstractType
+class CommentType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'title',
+            'author',
             'text',
-            array('label' => 'form.post.title')
+            array('label' => 'form.comment.author')
+        );
+        $builder->add(
+            'email',
+            'email',
+            array('label' => 'form.comment.email')
         );
         $builder->add(
             'body',
             'textarea',
-            array('label' => 'form.post.body')
-        );
-        $builder->add(
-            'publicationDate',
-            'datetime',
-            array('label' => 'form.post.publicationDate')
-        );
-        $builder->add(
-            'tagsString',
-            'text',
-            array('label' => 'form.post.tags')
+            array('label' => 'form.comment.body')
         );
     }
 
@@ -36,14 +31,15 @@ class PostType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Acme\BlogBundle\Document\Post',
-                'translation_domain' => 'AcmeBlogBundle',
+                'data_class' => 'Acme\BlogBundle\Document\Comment',
+                'label' => 'Add Comment',
+                'translation_domain' => 'AcmeBlogBundle'
             )
         );
     }
 
     public function getName()
     {
-        return 'post';
+        return 'comment';
     }
 }

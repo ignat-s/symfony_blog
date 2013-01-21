@@ -5,9 +5,10 @@ namespace Acme\BlogBundle\Document;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
 
 /**
- * @MongoDB\Document
+ * @MongoDB\Document(collection="users")
  */
 class User implements UserInterface
 {
@@ -44,7 +45,6 @@ class User implements UserInterface
 
     /**
      * @MongoDB\Collection
-     * @Assert\Type("array")
      */
     private $roles;
 
@@ -57,6 +57,12 @@ class User implements UserInterface
     {
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
         $this->roles = array();
+        $this->posts = array();
+    }
+
+    public function getPosts()
+    {
+        return $this->posts;
     }
 
     public function getId()

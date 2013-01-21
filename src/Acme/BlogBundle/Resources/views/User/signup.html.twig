@@ -1,20 +1,25 @@
 {% extends '::base.html.twig' %}
 
-{% block title %} {{ 'Sign up' | trans }}{% endblock %}
-{% block stylesheets %}
-    <style type="text/css">
-        .label { text-align: right }
-        .error { color: red }
-    </style>
+{% block title %} {{ 'Sign Up' | trans }}{% endblock %}
+
+{% block headline %}
+    {{ 'Sign Up' | trans({}, 'AcmeBlogBundle') }}
 {% endblock %}
 
-{% block body %}
-
-    {{ 'Already a user? Login' | trans({'%link%': path('login')}, 'AcmeBlogBundle') | raw }}
-    <h2>{{ 'Sign up' | trans({}, 'AcmeBlogBundle') }}</h2>
-    <form action="{{ path('signup') }}" method="post" {{ form_enctype(form) }}>
-        {{ form_widget(form) }}
-        <input type="submit" value="{{ 'Submit' | trans({}, 'AcmeBlogBundle') }}" />
-    </form>
-
+{% block content %}
+    <div class="span6">
+        <p>{{ 'Already a user? Sing in' | trans({'%link%': path('login')}, 'AcmeBlogBundle') | raw }}</p>
+        <form action="{{ path('signup') }}" class="form-horizontal" method="post" {{ form_enctype(form) }}>
+            {{ form_errors(form) }}
+            {{ form_row(form.user.username) }}
+            {{ form_row(form.user.email) }}
+            {{ form_row(form.user.plainPassword.password) }}
+            {{ form_row(form.user.plainPassword.confirm) }}
+            {{ form_rest(form) }}
+            <div class="form-actions">
+                <input type="submit" class="btn btn-primary" value="{{ 'Submit' | trans({}, 'AcmeBlogBundle') }}" />
+                <button type="reset" class="btn">Cancel</button>
+            </div>
+        </form>
+    </div>
 {% endblock %}

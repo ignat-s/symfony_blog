@@ -1,0 +1,8 @@
+{% if tags is defined and tags|length %}
+    <p class="tags">
+        <i class="icon-tags"></i>
+        {% for tag in tags %}
+            <a href="{{ path('posts_by_tag', {'tag': tag}) }}">{{ tag }}</a>{{ loop.last ? '' : ', ' }}
+        {% endfor %}
+    </p>
+{% endif %}

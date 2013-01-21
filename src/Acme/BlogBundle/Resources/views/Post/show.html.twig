@@ -2,9 +2,56 @@
 
 {% block title %}{{ post.title }}{% endblock %}
 
-{% block body %}
+{% block headline %}
+    {{ post.title }}
+{% endblock %}
 
-    <h2>{{ post.title }}</h2>
-    {{ post.body }}
+{% block content %}
+    <div>
+        {{ post.body|raw }}
+        <hr/>
+        {% include 'AcmeBlogBundle:Post:tags.html.twig' with {'tags': post.tags} %}
+        <p>
+            Posted {{ post.publicationDate|date() }}
+            <i>By <i class="icon-user"></i><a href="email:{{ post.author.email }}">{{ post.author.username }}</a></i>
+        </p>
+        <hr/>
+    </div>
+    <div>
+        {% if post.comments|length %}
+            <div class="comments">
+                <h3>Comments ({{ post.comments|length }})</h3>
+                {% for comment in post.comments %}
+                    <div class="comment">
+                        {{ comment.createdAt|date }}
+                        <i>By <a href="email:{{ comment.email }}">{{ comment.author }}</a></i><br/>
+                        <p>{{ comment.body }}</p>
+                    </div>
+                    <br/>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div>
+            <a href="#" id="show-add-comment-form" class="btn show-form" onclick="return false;">Add Comment</a>
+            <form action="{{ path('post_add_comment', {'permalink': post.permalink}) }}" id="add-comment-form" method="post" {{ form_enctype(comment_form) }} style="display: none">
+                <legend>{{ comment_form.vars.label }}</legend>
+                {{ form_row(comment_form.author, {'label_render': false, 'attr': {'placeholder': 'Name'} }) }}
+                {{ form_row(comment_form.email, {'label_render': false, 'attr': {'placeholder': 'Email'} }) }}
+                {{ form_row(comment_form.body, {'label_render': false, 'attr': {'placeholder': 'Comment text...'} }) }}
+                {{ form_rest(comment_form) }}
+                <input type="submit" class="btn btn-primary" value="{{ 'Add Comment' | trans({}, 'AcmeBlogBundle') }}" />
+            </form>
+        </div>
+    </div>
+{% endblock %}
 
+
+{% block foot_script %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $('#show-add-comment-form').click(function() {
+            $(this).hide();
+            $("#add-comment-form").slideDown(100);
+        });
+    </script>
 {% endblock %}

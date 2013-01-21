@@ -1,13 +1,21 @@
 form:
-    username: "Username:"
-    email: "Email:"
-    current_password: "Current password:"
-    password: "Password:"
-    password_confirmation: "Verification:"
-    new_password: "New password:"
-    new_password_confirmation: "Verification:"
-    terms: "Accept terms:"
-
-"Already a user? Login": Already a user? <a href="%link%">Login</a>
-"Not a user? Sign Up": Not a user? <a href="%link%">Sign Up</a>
-"Sign up": Sign up
+    username: Username
+    email: Email
+    current_password: Current password
+    password: Password
+    password_confirmation: Verification
+    new_password: New password
+    new_password_confirmation: Verification
+    terms: Accept terms
+    post:
+        title: Title
+        body: Text
+        publicationDate: Publication Date
+        tags: Tags
+    comment:
+        author: Author
+        email: Email
+        body: Text
+Already a user? Sing in: Already a user? <a href="%link%">Sing in</a>
+Not a user? Sign up: Not a user? <a href="%link%">Sign up</a>
+Sign up: Sign up

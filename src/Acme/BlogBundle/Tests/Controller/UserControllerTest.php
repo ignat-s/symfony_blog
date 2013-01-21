@@ -13,7 +13,7 @@ class UserControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/signup');
         $this->setCrawler($crawler);
 
-        $this->assertContains('Sign up', $crawler->filter('title')->text());
+        $this->assertContains('Sign Up', $crawler->filter('title')->text());
         $this->assertCrawlerHasNode(
             'form input[type="text"][required="required"][name="registration[user][username]"]'
         );
@@ -48,10 +48,8 @@ class UserControllerTest extends WebTestCase
         $crawler = $client->followRedirect();
         $this->setCrawler($crawler);
 
-        $this->assertCrawlerHasNode('h2:contains("Welcome, john!")');
-        $this->assertCrawlerHasNode('a:contains("Goto Blog Home")');
-        $this->assertCrawlerHasNode('a:contains("Create a New Post")');
-        $this->assertCrawlerHasNode('a:contains("Logout")');
+        $this->assertCrawlerHasNode('.content:contains("Welcome")');
+        $this->assertCrawlerHasNode('.content:contains("Posts")');
     }
 
     /**
@@ -84,7 +82,7 @@ class UserControllerTest extends WebTestCase
         $this->assertFalse($client->getResponse()->isRedirection());
         $this->setCrawler($crawler);
         foreach ((array)$errorMessages as $errorMessage) {
-            $this->assertCrawlerHasNode("ul li:contains(\"$errorMessage\")");
+            $this->assertCrawlerHasNode("span:contains(\"$errorMessage\")");
         }
     }
 
@@ -137,7 +135,7 @@ class UserControllerTest extends WebTestCase
         $this->assertCrawlerHasNode('form input[type="text"][required="required"][name="_username"]');
         $this->assertCrawlerHasNode('form input[type="password"][required="required"][name="_password"]');
 
-        $form = $crawler->selectButton('Login')->form(
+        $form = $crawler->selectButton('Sign In')->form(
             array(
                 '_username' => $username,
                 '_password' => $password,
@@ -155,10 +153,10 @@ class UserControllerTest extends WebTestCase
     {
         return array(
             'admin login' => array(
-                'admin', 'adminpass', 'html:contains("This is a place holder for the blog!")'
+                'admin', 'adminpass', ':contains("Posts")'
             ),
             'bad credentials' => array(
-                'admin', 'wrongpassword', 'html:contains("Bad credentials")'
+                'admin', 'wrongpassword', '.content:contains("Bad credentials")'
             )
         );
     }
