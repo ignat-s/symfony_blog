@@ -32,8 +32,7 @@
             </div>
         {% endif %}
         <div>
-            <a href="#" id="show-add-comment-form" class="btn show-form" onclick="return false;">Add Comment</a>
-            <form action="{{ path('post_add_comment', {'permalink': post.permalink}) }}" id="add-comment-form" method="post" {{ form_enctype(comment_form) }} style="display: none">
+            <form action="{{ path('post_add_comment', {'permalink': post.permalink}) }}" method="post" {{ form_enctype(comment_form) }}>
                 <legend>{{ comment_form.vars.label }}</legend>
                 {{ form_row(comment_form.author, {'label_render': false, 'attr': {'placeholder': 'Name'} }) }}
                 {{ form_row(comment_form.email, {'label_render': false, 'attr': {'placeholder': 'Email'} }) }}
@@ -43,15 +42,4 @@
             </form>
         </div>
     </div>
-{% endblock %}
-
-
-{% block foot_script %}
-    {{ parent() }}
-    <script type="text/javascript">
-        $('#show-add-comment-form').click(function() {
-            $(this).hide();
-            $("#add-comment-form").slideDown(100);
-        });
-    </script>
 {% endblock %}
