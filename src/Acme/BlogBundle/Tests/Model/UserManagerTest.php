@@ -3,7 +3,7 @@
 namespace Acme\BlogBundle\Tests\Model;
 
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-use Doctrine\Common\Persistence\ObjectRepository;
+use Acme\BlogBundle\Repository\UserRepositoryInterface;
 use Acme\BlogBundle\Document\User;
 use Acme\BlogBundle\Model\UserManager;
 
@@ -26,7 +26,7 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->repository = $this->getMock('Doctrine\Common\Persistence\ObjectRepository');
+        $this->repository = $this->getMock('Acme\BlogBundle\Repository\UserRepositoryInterface');
         $this->encoderFactory = $this->getMock('Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface');
         $this->userManager = new UserManager($this->repository, $this->encoderFactory);
     }
@@ -75,99 +75,17 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($oldPassword, $user->getPassword());
     }
 
-    public function testFindUserBy()
+    public function testLoadUserByUsername()
     {
         $user = new User();
-        $criteria = array('username' => 'john');
+        $usernameOrEmail = 'test';
 
         $this->repository->expects($this->once())
-            ->method('findOneBy')
-            ->with($criteria)
-            ->will($this->returnValue($user));
-
-        $this->assertSame($user, $this->userManager->findUserBy($criteria));
-    }
-
-    public function testFindUserByUsername()
-    {
-        $user = new User();
-        $username = 'john';
-        $user->setUsername($username);
-
-        $this->repository->expects($this->once())
-            ->method('findOneBy')
-            ->with(array('username' => $username))
-            ->will($this->returnValue($user));
-
-        $this->assertSame($user, $this->userManager->findUserByUsername($username));
-    }
-
-    public function testFindUserByEmail()
-    {
-        $user = new User();
-        $email = 'john@example.com';
-        $user->setUsername($email);
-
-        $this->repository->expects($this->once())
-            ->method('findOneBy')
-            ->with(array('email' => $email))
-            ->will($this->returnValue($user));
-
-        $this->assertSame($user, $this->userManager->findUserByEmail($email));
-    }
-
-    public function getCriteriaByUsernameOrEmail()
-    {
-        return array(
-            'by username' => array(
-                'john', array('username' => 'john')
-            ),
-            'by email' => array(
-                'john@example.com', array('email' => 'john@example.com')
-            ),
-        );
-    }
-
-    /**
-     * @dataProvider getCriteriaByUsernameOrEmail
-     */
-    public function testFindUserByUsernameOrEmail($usernameOrEmail, array $expectedCriteria)
-    {
-        $user = new User();
-
-        $this->repository->expects($this->once())
-            ->method('findOneBy')
-            ->with($expectedCriteria)
-            ->will($this->returnValue($user));
-
-        $this->assertSame($user, $this->userManager->findUserByUsernameOrEmail($usernameOrEmail));
-    }
-
-    /**
-     * @dataProvider getCriteriaByUsernameOrEmail
-     */
-    public function testLoadUserByUsername($usernameOrEmail, array $expectedCriteria)
-    {
-        $user = new User();
-
-        $this->repository->expects($this->once())
-            ->method('findOneBy')
-            ->with($expectedCriteria)
+            ->method('findOneByUsernameOrEmail')
+            ->with($usernameOrEmail)
             ->will($this->returnValue($user));
 
         $this->assertSame($user, $this->userManager->loadUserByUsername($usernameOrEmail));
-    }
-
-    /**
-     * @dataProvider getCriteriaByUsernameOrEmail
-     * @expectedException \Symfony\Component\Security\Core\Exception\UsernameNotFoundException
-     * @expectedExceptionMessage No user "bob" was found.
-     */
-    public function testFindUserByUsernameOrEmailFailed()
-    {
-        $username = 'bob';
-        $this->repository->expects($this->once())->method('findOneBy')->with(array('username' => $username));
-        $this->userManager->loadUserByUsername($username);
     }
 
     public function testRefreshUser()

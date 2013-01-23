@@ -7,15 +7,15 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-use Doctrine\Common\Persistence\ObjectRepository;
+use Acme\BlogBundle\Repository\UserRepositoryInterface;
 use Acme\BlogBundle\Document\User;
 
 class UserManager implements UserProviderInterface
 {
     /**
-     * @var ObjectRepository
+     * @var UserRepositoryInterface
      */
-    private $repository;
+    private $userRepository;
 
     /**
      * @var string
@@ -28,11 +28,11 @@ class UserManager implements UserProviderInterface
     private $encoderFactory;
 
     public function __construct(
-        ObjectRepository $repository,
+        UserRepositoryInterface $userRepository,
         EncoderFactoryInterface $encoderFactory,
         $class = 'Acme\BlogBundle\Document\User'
     ) {
-        $this->repository = $repository;
+        $this->userRepository = $userRepository;
         $this->encoderFactory = $encoderFactory;
         $this->class = $class;
     }
@@ -55,34 +55,9 @@ class UserManager implements UserProviderInterface
         }
     }
 
-    public function findUserBy(array $criteria)
-    {
-        return $this->repository->findOneBy($criteria);
-    }
-
-    public function findUserByEmail($email)
-    {
-        return $this->repository->findOneBy(array('email' => $email));
-    }
-
-    public function findUserByUsername($username)
-    {
-        return $this->repository->findOneBy(array('username' => $username));
-    }
-
-
-    public function findUserByUsernameOrEmail($usernameOrEmail)
-    {
-        if (filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL)) {
-            return $this->findUserByEmail($usernameOrEmail);
-        }
-
-        return $this->findUserByUsername($usernameOrEmail);
-    }
-
     public function loadUserByUsername($usernameOrEmail)
     {
-        $user = $this->findUserByUsernameOrEmail($usernameOrEmail);
+        $user = $this->userRepository->findOneByUsernameOrEmail($usernameOrEmail);
 
         if (!$user) {
             throw new UsernameNotFoundException(
@@ -107,7 +82,7 @@ class UserManager implements UserProviderInterface
             );
         }
 
-        $refreshedUser = $this->findUserBy(array('id' => $user->getId()));
+        $refreshedUser = $this->userRepository->findOneBy(array('id' => $user->getId()));
         if (null === $refreshedUser) {
             throw new UsernameNotFoundException(sprintf('User with ID "%d" could not be reloaded.', $user->getId()));
         }
