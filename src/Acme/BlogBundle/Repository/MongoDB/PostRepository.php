@@ -2,7 +2,6 @@
 
 namespace Acme\BlogBundle\Repository\MongoDB;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Acme\BlogBundle\Repository\PostRepositoryInterface;
 use Acme\BlogBundle\Document\Post;
@@ -10,8 +9,7 @@ use Acme\BlogBundle\Document\Post;
 class PostRepository extends DocumentRepository implements PostRepositoryInterface
 {
     /**
-     * @param string $permalink
-     * @return Post|null
+     * {@inheritDoc}
      */
     public function findOneByPermalink($permalink)
     {
@@ -19,7 +17,7 @@ class PostRepository extends DocumentRepository implements PostRepositoryInterfa
     }
 
     /**
-     * @return object Query
+     * {@inheritDoc}
      */
     public function createOrderedPostsQuery()
     {
@@ -29,8 +27,7 @@ class PostRepository extends DocumentRepository implements PostRepositoryInterfa
     }
 
     /**
-     * @param string $tag
-     * @return object Query
+     * {@inheritDoc}
      */
     public function createOrderedPostsWithTagQuery($tag)
     {
