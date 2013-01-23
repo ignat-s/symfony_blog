@@ -23,7 +23,7 @@
         <service id="acme_blog.user_repository"
                  factory-service="acme_blog.object_manager"
                  factory-method="getRepository"
-                 class="Doctrine\Common\Persistence\ObjectRepository"
+                 class="Acme\BlogBundle\Repository\UserRepositoryInterface"
                  public="false">
             <argument>%acme_blog.document.user.class%</argument>
         </service>
