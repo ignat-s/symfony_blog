@@ -27,17 +27,34 @@ class LoadUserData extends AbstractFixture implements FixtureInterface, Containe
      */
     public function load(ObjectManager $manager)
     {
-        $userAdmin = $this->userManager->createUser();
-        $userAdmin->setUsername('admin');
-        $userAdmin->setEmail('admin@example.com');
-        $userAdmin->addRole(User::ROLE_ADMIN);
-        $userAdmin->setPlainPassword('adminpass');
-        $this->userManager->updatePassword($userAdmin);
+        $admin = $this->createUser('admin', 'adminpass', 'admin@example.com', array(User::ROLE_ADMIN));
+        $manager->persist($admin);
+        $this->addReference('admin', $admin);
 
-        $manager->persist($userAdmin);
+        $user = $this->createUser('user', 'userpass', 'user@example.com', array(User::ROLE_USER));
+        $manager->persist($user);
+        $this->addReference('user', $user);
+
         $manager->flush();
+    }
 
-        $this->addReference('admin-user', $userAdmin);
+    /**
+     * @param string $username
+     * @param string $password
+     * @param string $email
+     * @param array $roles
+     * @return User
+     */
+    private function createUser($username, $password, $email, array $roles)
+    {
+        $user = $this->userManager->createUser();
+        $user->setUsername($username);
+        $user->setEmail($email);
+        $user->setRoles($roles);
+        $user->setPlainPassword($password);
+        $this->userManager->updatePassword($user);
+
+        return $user;
     }
 
     /**

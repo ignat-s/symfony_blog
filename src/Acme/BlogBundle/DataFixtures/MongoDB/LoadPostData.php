@@ -37,7 +37,7 @@ class LoadPostData extends AbstractFixture implements FixtureInterface, Containe
         $post->addTag('TDD');
         $post->addTag('unit testing');
 
-        $post->setAuthor($this->getReference('admin-user'));
+        $post->setAuthor($this->getReference('user'));
 
         $this->postManager->updatePermalink($post);
 
