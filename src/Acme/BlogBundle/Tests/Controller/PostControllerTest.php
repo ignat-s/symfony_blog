@@ -93,7 +93,6 @@ class PostControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/posts/unit_testing');
         $this->setCrawler($crawler);
 
-        $this->assertCrawlerHasNode('a:contains("Add Comment")');
         $this->assertCrawlerHasNode('form input[type="text"][required="required"][name="comment[author]"]');
         $this->assertCrawlerHasNode('form input[type="email"][required="required"][name="comment[email]"]');
         $this->assertCrawlerHasNode('form textarea[required="required"][name="comment[body]"]');
