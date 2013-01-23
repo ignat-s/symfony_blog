@@ -1,0 +1,26 @@
+services:
+    acme_blog.navbar:
+        class: %mopa_bootstrap.navbar.generic%
+        arguments:
+            # first argument: a named array of menues:
+            - { leftmenu: @acme_blog.menu.main= }
+            # second argument: a named array of FormType Classes
+            - {}
+            # third argument: a named array of options
+            - { title: "Symfony Blog", titleRoute: "posts_index", fixedTop: false, isFluid: true }
+        tags:
+            # The alias is used to retrieve the navbar in templates
+            - { name: mopa_bootstrap.navbar, alias: sandboxFrontendNavbar }
+
+    acme_blog.menu_builder:
+        class: Acme\BlogBundle\Menu\MenuBuilder
+        arguments: ["@knp_menu.factory", "@security.context"]
+
+    acme_blog.menu.main:
+        class: Knp\Menu\MenuItem # the service definition requires setting the class
+        factory_service: acme_blog.menu_builder
+        factory_method: createMainMenu
+        arguments: ["@request"]
+        scope: request # needed as we have the request as a dependency here
+        tags:
+            - { name: knp_menu.menu, alias: main } # The alias is what is used to

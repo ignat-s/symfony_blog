@@ -24,9 +24,7 @@ class MenuBuilder extends AbstractNavbarMenuBuilder
         if ($this->securityContext->isGranted('ROLE_USER')) {
             $menu->addChild('Create post', array('route' => 'post_create'));
             $menu->addChild('Logout', array('route' => '_logout'));
-        }
-
-        if ($this->securityContext->isGranted('IS_AUTHENTICATED_ANONYMOUSLY')) {
+        } else {
             $menu->addChild('Sign up', array('route' => 'signup'));
             $menu->addChild('Sign in', array('route' => 'login'));
         }
