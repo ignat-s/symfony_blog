@@ -8,7 +8,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
 
 /**
- * @MongoDB\Document(collection="users")
+ * @MongoDB\Document(collection="users", repositoryClass="Acme\BlogBundle\Repository\MongoDB\UserRepository")
  */
 class User implements UserInterface
 {
