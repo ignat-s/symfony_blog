@@ -8,43 +8,57 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Acme\BlogBundle\Repository\UserRepositoryInterface;
-use Acme\BlogBundle\Document\User;
+use Acme\BlogBundle\Model\User;
 
 class UserManager implements UserProviderInterface
 {
+    /**
+     * @var DomainFactoryInterface
+     */
+    private $domainFactory;
+
     /**
      * @var UserRepositoryInterface
      */
     private $userRepository;
 
     /**
-     * @var string
-     */
-    private $class;
-
-    /**
      * @var EncoderFactoryInterface
      */
     private $encoderFactory;
 
+    /**
+     * @param DomainFactoryInterface $domainFactory
+     * @param UserRepositoryInterface $userRepository
+     * @param EncoderFactoryInterface $encoderFactory
+     */
     public function __construct(
+        DomainFactoryInterface $domainFactory,
         UserRepositoryInterface $userRepository,
-        EncoderFactoryInterface $encoderFactory,
-        $class = 'Acme\BlogBundle\Document\User'
+        EncoderFactoryInterface $encoderFactory
     ) {
+        $this->domainFactory = $domainFactory;
         $this->userRepository = $userRepository;
         $this->encoderFactory = $encoderFactory;
-        $this->class = $class;
     }
 
+    /**
+     * Creates user with ROLE_USER
+     *
+     * @return User
+     */
     public function createUser()
     {
-        /** @var User $user */
-        $user = new $this->class();
+        $user = $this->domainFactory->createUser();
         $user->addRole(User::ROLE_USER);
         return $user;
     }
 
+    /**
+     * Updates user with encored password if plain password is set.
+     *
+     * @param User $user
+     */
     public function updatePassword(User $user)
     {
         if (0 !== strlen($password = $user->getPlainPassword())) {
@@ -55,6 +69,9 @@ class UserManager implements UserProviderInterface
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function loadUserByUsername($usernameOrEmail)
     {
         $user = $this->userRepository->findOneByUsernameOrEmail($usernameOrEmail);
@@ -68,17 +85,14 @@ class UserManager implements UserProviderInterface
         return $user;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function refreshUser(UserInterface $user)
     {
-        $class = $this->class;
-
-        if (!$user instanceof $class) {
-            throw new UnsupportedUserException('Account is not support.');
-        }
-
         if (!$user instanceof User) {
             throw new UnsupportedUserException(
-                sprintf('Expected an instance of Acme\BlogBundle\Document\User, but got %s.', get_class($user))
+                sprintf('Account %s is not support.', get_class($user))
             );
         }
 
@@ -90,8 +104,11 @@ class UserManager implements UserProviderInterface
         return $refreshedUser;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function supportsClass($class)
     {
-        return $class === $this->class;
+        return class_exists($class) && in_array('Acme\BlogBundle\Model\User', class_parents($class));
     }
 }

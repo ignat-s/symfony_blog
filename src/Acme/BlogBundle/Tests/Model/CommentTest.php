@@ -1,9 +1,8 @@
 <?php
 
-namespace Acme\BlogBundle\Tests\Document;
+namespace Acme\BlogBundle\Tests\Model;
 
-use Acme\BlogBundle\Document\User;
-use Acme\BlogBundle\Document\Comment;
+use Acme\BlogBundle\Model\Comment;
 
 class CommentTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,7 +13,7 @@ class CommentTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->comment = new Comment();
+        $this->comment = $this->getMockForAbstractClass('Acme\BlogBundle\Model\Comment');
     }
 
     public function testConstructorDefaultValues()

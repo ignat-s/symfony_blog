@@ -38,7 +38,7 @@ class UserType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Acme\BlogBundle\Document\User',
+                'data_class' => 'Acme\BlogBundle\Model\User',
                 'translation_domain' => 'AcmeBlogBundle',
             )
         );

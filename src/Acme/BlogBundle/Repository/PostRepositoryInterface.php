@@ -3,7 +3,7 @@
 namespace Acme\BlogBundle\Repository;
 
 use Doctrine\Common\Persistence\ObjectRepository;
-use Acme\BlogBundle\Document\Post;
+use Acme\BlogBundle\Model\Post;
 
 interface PostRepositoryInterface extends ObjectRepository
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Acme\HelloBundle\DataFixtures\ORM;
+namespace Acme\BlogBundle\DataFixtures\MongoDB;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -9,7 +9,6 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Acme\BlogBundle\Model\PostManager;
 use Acme\BlogBundle\Document\Post;
-use Acme\BlogBundle\Document\Tag;
 
 class LoadPostData extends AbstractFixture implements FixtureInterface, ContainerAwareInterface, OrderedFixtureInterface
 {

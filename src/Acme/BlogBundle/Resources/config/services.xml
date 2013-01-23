@@ -5,6 +5,8 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="acme_blog.domain_factory.class">Acme\BlogBundle\Document\DomainFactory</parameter>
+
         <parameter key="acme_blog.document.user.class">Acme\BlogBundle\Document\User</parameter>
         <parameter key="acme_blog.model.user_manager.class">Acme\BlogBundle\Model\UserManager</parameter>
 
@@ -36,16 +38,17 @@
             <argument>%acme_blog.document.post.class%</argument>
         </service>
 
+        <service id="acme_blog.domain_factory" class="%acme_blog.domain_factory.class%"/>
+
         <service id="acme_blog.user_manager" class="%acme_blog.model.user_manager.class%">
+            <argument type="service" id="acme_blog.domain_factory"/>
             <argument type="service" id="acme_blog.user_repository"/>
             <argument type="service" id="security.encoder_factory"/>
-            <argument>%acme_blog.document.user.class%</argument>
         </service>
 
         <service id="acme_blog.post_manager" class="%acme_blog.model.post_manager.class%">
+            <argument type="service" id="acme_blog.domain_factory"/>
             <argument type="service" id="acme_blog.post_repository"/>
-            <argument type="service" id="security.encoder_factory"/>
-            <argument>%acme_blog.document.user.class%</argument>
         </service>
     </services>
 

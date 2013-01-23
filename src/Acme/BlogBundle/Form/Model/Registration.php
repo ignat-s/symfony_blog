@@ -3,12 +3,12 @@
 namespace Acme\BlogBundle\Form\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Acme\BlogBundle\Document\User;
+use Acme\BlogBundle\Model\User;
 
 class Registration
 {
     /**
-     * @Assert\Type(type="Acme\BlogBundle\Document\User")
+     * @Assert\Type(type="Acme\BlogBundle\Model\User")
      * @Assert\Valid()
      * @var User
      */

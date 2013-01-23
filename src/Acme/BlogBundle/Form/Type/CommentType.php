@@ -31,7 +31,7 @@ class CommentType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Acme\BlogBundle\Document\Comment',
+                'data_class' => 'Acme\BlogBundle\Model\Comment',
                 'label' => 'Add Comment',
                 'translation_domain' => 'AcmeBlogBundle'
             )

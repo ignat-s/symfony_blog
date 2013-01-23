@@ -2,7 +2,7 @@
 
 namespace Acme\BlogBundle\Repository;
 
-use Acme\BlogBundle\Document\User;
+use Acme\BlogBundle\Model\User;
 use Doctrine\Common\Persistence\ObjectRepository;
 
 interface UserRepositoryInterface extends ObjectRepository

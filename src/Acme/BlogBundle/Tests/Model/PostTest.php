@@ -1,10 +1,10 @@
 <?php
 
-namespace Acme\BlogBundle\Tests\Document;
+namespace Acme\BlogBundle\Tests\Model;
 
-use Acme\BlogBundle\Document\User;
-use Acme\BlogBundle\Document\Post;
-use Acme\BlogBundle\Document\Comment;
+use Acme\BlogBundle\Model\User;
+use Acme\BlogBundle\Model\Comment;
+use Acme\BlogBundle\Model\Post;
 
 class PostTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,7 +15,7 @@ class PostTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->post = new Post();
+        $this->post = $this->getMockForAbstractClass('Acme\BlogBundle\Model\Post');
     }
 
     public function testConstructorDefaultValues()
@@ -59,7 +59,7 @@ class PostTest extends \PHPUnit_Framework_TestCase
 
     public function testAuthor()
     {
-        $author = new User();
+        $author = $this->getMockForAbstractClass('Acme\BlogBundle\Model\User');
         $this->post->setAuthor($author);
         $this->assertEquals($author, $this->post->getAuthor());
     }
@@ -73,6 +73,8 @@ class PostTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider setTagsDataProvider
+     * @param string $actual
+     * @param string $expected
      */
     public function testSetTags($actual, $expected)
     {
@@ -100,6 +102,8 @@ class PostTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider getTagsStringDataProvider
+     * @param array $actual
+     * @param string $expected
      */
     public function testGetTagsString(array $actual, $expected)
     {
@@ -117,6 +121,8 @@ class PostTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider setTagsStringDataProvider
+     * @param string $actual
+     * @param array $expected
      */
     public function testSetTagsString($actual, array $expected)
     {
@@ -135,7 +141,7 @@ class PostTest extends \PHPUnit_Framework_TestCase
 
     public function testComments()
     {
-        $comment = new Comment();
+        $comment = $this->getMockForAbstractClass('Acme\BlogBundle\Model\Comment');
         $this->post->addComment($comment);
         $this->assertEquals(array($comment), $this->post->getComments());
     }

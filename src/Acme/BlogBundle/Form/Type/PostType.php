@@ -36,7 +36,7 @@ class PostType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Acme\BlogBundle\Document\Post',
+                'data_class' => 'Acme\BlogBundle\Model\Post',
                 'translation_domain' => 'AcmeBlogBundle',
             )
         );

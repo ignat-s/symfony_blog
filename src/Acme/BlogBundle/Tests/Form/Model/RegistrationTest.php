@@ -2,7 +2,7 @@
 
 namespace Acme\BlogBundle\Tests\Form\Model;
 
-use Acme\BlogBundle\Document\User;
+use Acme\BlogBundle\Model\User;
 use Acme\BlogBundle\Form\Model\Registration;
 
 class RegistrationTest extends \PHPUnit_Framework_TestCase
@@ -19,8 +19,16 @@ class RegistrationTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->user = new User();
+        $this->user = $this->createUser();
         $this->registration = new Registration($this->user);
+    }
+
+    /**
+     * @return User
+     */
+    private function createUser()
+    {
+        return $this->getMockForAbstractClass('Acme\BlogBundle\Model\User');
     }
 
     public function testConstructorDefaultValues()
@@ -31,7 +39,7 @@ class RegistrationTest extends \PHPUnit_Framework_TestCase
 
     public function testUser()
     {
-        $user = new User();
+        $user = $this->createUser();
         $this->registration->setUser($user);
         $this->assertSame($user, $this->registration->getUser());
     }

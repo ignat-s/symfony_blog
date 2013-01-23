@@ -3,12 +3,18 @@
 namespace Acme\BlogBundle\Tests\Model;
 
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use Acme\BlogBundle\Model\DomainFactoryInterface;
 use Acme\BlogBundle\Repository\UserRepositoryInterface;
-use Acme\BlogBundle\Document\User;
+use Acme\BlogBundle\Model\User;
 use Acme\BlogBundle\Model\UserManager;
 
 class UserManagerTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $domainFactory;
+
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
@@ -26,21 +32,34 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        $this->domainFactory = $this->getMock('Acme\BlogBundle\Model\DomainFactoryInterface');
         $this->repository = $this->getMock('Acme\BlogBundle\Repository\UserRepositoryInterface');
         $this->encoderFactory = $this->getMock('Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface');
-        $this->userManager = new UserManager($this->repository, $this->encoderFactory);
+        $this->userManager = new UserManager($this->domainFactory, $this->repository, $this->encoderFactory);
     }
 
     public function testCreateUser()
     {
-        $user = $this->userManager->createUser();
-        $this->assertInstanceOf('Acme\BlogBundle\Document\User', $user);
-        $this->assertTrue($user->hasRole(User::ROLE_USER));
+        $expectedUser = $this->createUser();
+        $this->domainFactory->expects($this->once())
+            ->method('createUser')
+            ->will($this->returnValue($expectedUser));
+        $actualUser = $this->userManager->createUser();
+        $this->assertSame($expectedUser, $actualUser);
+        $this->assertTrue($actualUser->hasRole(User::ROLE_USER));
+    }
+
+    /**
+     * @return User
+     */
+    private function createUser()
+    {
+        return $this->getMockForAbstractClass('Acme\BlogBundle\Model\User');
     }
 
     public function testUpdatePassword()
     {
-        $user = new User();
+        $user = $this->createUser();
         $salt = $user->getSalt();
         $plainPassword = 'pa$$word';
         $encodedPassword = sha1($plainPassword);
@@ -65,7 +84,7 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testUpdatePasswordNotChange()
     {
-        $user = new User();
+        $user = $this->createUser();
         $oldPassword = sha1('pa$$word');
         $user->setPassword($oldPassword);
 
@@ -77,7 +96,7 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadUserByUsername()
     {
-        $user = new User();
+        $user = $this->createUser();
         $usernameOrEmail = 'test';
 
         $this->repository->expects($this->once())
@@ -90,7 +109,7 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testRefreshUser()
     {
-        $user = new User();
+        $user = $this->createUser();
         $userId = 'user_id';
         $user->setId($userId);
 
@@ -106,33 +125,22 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Symfony\Component\Security\Core\Exception\UnsupportedUserException
-     * @expectedExceptionMessage Account is not support.
+     * @expectedExceptionMessage Account Acme_BlogBundle_Tests_Model_TestRefreshUser is not support.
      */
     public function testRefreshUserClassNotSupport()
     {
-        $user = $this->getMock('Symfony\Component\Security\Core\User\UserInterface');
-        $this->userManager->refreshUser($user);
-    }
-
-    public function testRefreshUserClassImplement()
-    {
-        $this->setExpectedException(
-            'Symfony\Component\Security\Core\Exception\UnsupportedUserException',
-            'Expected an instance of Acme\BlogBundle\Document\User, but got AcmeBlogBundleDocumentTestUser.'
-        );
-
-        $userClass = 'AcmeBlogBundleDocumentTestUser';
         $user = $this->getMockBuilder('Symfony\Component\Security\Core\User\UserInterface')
-            ->setMockClassName($userClass)
-            ->getMockForAbstractClass();
-
-        $userManager = new UserManager($this->repository, $this->encoderFactory, $userClass);
-        $userManager->refreshUser($user);
+            ->setMockClassName('Acme_BlogBundle_Tests_Model_TestRefreshUser')
+            ->getMock();
+        $this->userManager->refreshUser($user);
     }
 
     public function testSupportsClass()
     {
+        $mockClass = $this->getMockClass('Acme\BlogBundle\Document\User');
+        $this->assertTrue($this->userManager->supportsClass($mockClass));
         $this->assertTrue($this->userManager->supportsClass('Acme\BlogBundle\Document\User'));
+        $this->assertFalse($this->userManager->supportsClass('Acme\BlogBundle\Model\User'));
         $this->assertFalse($this->userManager->supportsClass('User'));
     }
 }

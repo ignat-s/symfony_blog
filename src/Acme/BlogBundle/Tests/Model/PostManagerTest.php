@@ -2,11 +2,18 @@
 
 namespace Acme\BlogBundle\Tests\Model;
 
-use Acme\BlogBundle\Document\Post;
 use Acme\BlogBundle\Model\PostManager;
+use Acme\BlogBundle\Model\Post;
+use Acme\BlogBundle\Model\Comment;
+use Acme\BlogBundle\Model\User;
 
 class PostManagerTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $domainFactory;
+
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
@@ -19,16 +26,71 @@ class PostManagerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        $this->domainFactory = $this->getMock('Acme\BlogBundle\Model\DomainFactoryInterface');
         $this->repository = $this->getMock('Acme\BlogBundle\Repository\PostRepositoryInterface');
-        $this->postManager = new PostManager($this->repository);
+        $this->postManager = new PostManager($this->domainFactory, $this->repository);
+    }
+
+    public function testCreatePost()
+    {
+        $user = $this->createUser();
+        $expectedPost = $this->createPost();
+
+        $this->domainFactory->expects($this->once())
+            ->method('createPost')
+            ->will($this->returnValue($expectedPost));
+
+        $actualPost = $this->postManager->createPost($user);
+        $this->assertSame($expectedPost, $actualPost);
+        $this->assertSame($user, $expectedPost->getAuthor());
+    }
+
+    /**
+     * @return User
+     */
+    private function createUser()
+    {
+        return $this->getMockForAbstractClass('Acme\BlogBundle\Model\User');
+    }
+
+    /**
+     * @return Post
+     */
+    private function createPost()
+    {
+        return $this->getMockForAbstractClass('Acme\BlogBundle\Model\Post');
+    }
+
+    public function testAddNewPostComment()
+    {
+        $expectedComment = $this->createComment();
+        $post = $this->createPost();
+
+        $this->domainFactory->expects($this->once())
+            ->method('createComment')
+            ->will($this->returnValue($expectedComment));
+
+        $actualComment = $this->postManager->addNewPostComment($post);
+        $this->assertSame($expectedComment, $actualComment);
+        $this->assertEquals(array($expectedComment), $post->getComments());
+    }
+
+    /**
+     * @return Comment
+     */
+    private function createComment()
+    {
+        return $this->getMockForAbstractClass('Acme\BlogBundle\Model\Comment');
     }
 
     /**
      * @dataProvider updatePermalinkReplacementDataProvider
+     * @param string $actualTitle
+     * @param string $expectedPermalink
      */
     public function testUpdatePermalinkReplacement($actualTitle, $expectedPermalink)
     {
-        $post = new Post();
+        $post = $this->createPost();
         $post->setTitle($actualTitle);
 
         $this->repository->expects($this->once())
@@ -40,6 +102,9 @@ class PostManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedPermalink, $post->getPermalink());
     }
 
+    /**
+     * @return array
+     */
     public function updatePermalinkReplacementDataProvider()
     {
         return array(
@@ -51,7 +116,7 @@ class PostManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testUpdatePermalinkRecursion()
     {
-        $post = new Post();
+        $post = $this->createPost();
         $post->setTitle('Post title');
 
         $this->repository->expects($this->exactly(4))
@@ -59,9 +124,9 @@ class PostManagerTest extends \PHPUnit_Framework_TestCase
             ->will(
                 $this->returnValueMap(
                     array(
-                        array('Post_title', new Post()),
-                        array('Post_title_1', new Post()),
-                        array('Post_title_2', new Post()),
+                        array('Post_title', $this->createPost()),
+                        array('Post_title_1', $this->createPost()),
+                        array('Post_title_2', $this->createPost()),
                         array('Post_title_3', null),
                     )
                 )
@@ -73,7 +138,7 @@ class PostManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testUpdatePermalinkWhenItHasSameValue()
     {
-        $post = new Post();
+        $post = $this->createPost();
         $post->setTitle('Post title');
 
         $this->repository->expects($this->once(4))

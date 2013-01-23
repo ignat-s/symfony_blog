@@ -4,7 +4,6 @@ namespace Acme\BlogBundle\Repository\MongoDB;
 
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Acme\BlogBundle\Repository\UserRepositoryInterface;
-use Acme\BlogBundle\Document\Post;
 
 class UserRepository extends DocumentRepository implements UserRepositoryInterface
 {

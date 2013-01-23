@@ -17,9 +17,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Acme\BlogBundle\Form\Type\CommentType;
 use Acme\BlogBundle\Form\Type\PostType;
-use Acme\BlogBundle\Document\User;
-use Acme\BlogBundle\Document\Post;
-use Acme\BlogBundle\Document\Comment;
+use Acme\BlogBundle\Model\User;
+use Acme\BlogBundle\Model\Post;
+use Acme\BlogBundle\Model\Comment;
 use Acme\BlogBundle\Model\PostManager;
 use Acme\BlogBundle\Repository\PostRepositoryInterface;
 
@@ -89,8 +89,7 @@ class PostController extends Controller
         /** @var Router $router */
         $router = $this->get('router');
 
-        $post = new Post();
-        $post->setAuthor($securityContext->getToken()->getUser());
+        $post = $postManager->createPost($securityContext->getToken()->getUser());
         $form = $this->createForm(
             new PostType(),
             $post
@@ -127,6 +126,8 @@ class PostController extends Controller
     {
         /** @var ObjectManager $objectManager */
         $objectManager = $this->get('acme_blog.object_manager');
+        /** @var PostManager $postManager */
+        $postManager = $this->get('acme_blog.post_manager');
         /** @var PostRepositoryInterface $repository */
         $repository = $objectManager->getRepository('AcmeBlogBundle:Post');
         $post = $repository->findOneByPermalink($permalink);
@@ -137,7 +138,7 @@ class PostController extends Controller
 
         return array(
             'post' => $post,
-            'comment_form' => $this->createCommentForm()->createView()
+            'comment_form' => $this->createCommentForm($postManager->addNewPostComment($post))->createView()
         );
     }
 
@@ -152,6 +153,8 @@ class PostController extends Controller
         $session = $this->get('session');
         /** @var Router $router */
         $router = $this->get('router');
+        /** @var PostManager $postManager */
+        $postManager = $this->get('acme_blog.post_manager');
         /** @var ObjectManager $objectManager */
         $objectManager = $this->get('acme_blog.object_manager');
         /** @var PostRepositoryInterface $repository */
@@ -162,12 +165,13 @@ class PostController extends Controller
             throw new NotFoundHttpException('Post not found.');
         }
 
-        $form = $this->createCommentForm();
+        $comment = $postManager->addNewPostComment($post);
+
+        $form = $this->createCommentForm($comment);
         $form->bind($request);
 
         if ($form->isValid()) {
-            $post->addComment($form->getData());
-            $objectManager->persist($post);
+            $objectManager->persist($comment);
             $objectManager->flush();
 
             $session->getFlashBag()->add('success', 'Your comment was added.');
@@ -180,15 +184,16 @@ class PostController extends Controller
         );
     }
 
-    private function createCommentForm()
+    private function createCommentForm(Comment $comment)
     {
         /** @var SecurityContextInterface $securityContext */
         $securityContext = $this->get('security.context');
-        $comment = new Comment();
+
         if ($securityContext->isGranted(User::ROLE_USER)) {
             $comment->setAuthor($securityContext->getToken()->getUser()->getUsername());
             $comment->setEmail($securityContext->getToken()->getUser()->getEmail());
         }
+
         return $this->createForm(
             new CommentType(),
             $comment

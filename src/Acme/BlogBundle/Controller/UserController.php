@@ -2,12 +2,12 @@
 
 namespace Acme\BlogBundle\Controller;
 
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
-use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -15,9 +15,9 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Routing\Router;
 use Doctrine\Common\Persistence\ObjectManager;
 use Acme\BlogBundle\Model\UserManager;
+use Acme\BlogBundle\Model\User;
 use Acme\BlogBundle\Form\Type\RegistrationType;
 use Acme\BlogBundle\Form\Model\Registration;
-use Acme\BlogBundle\Document\User;
 
 class UserController extends Controller
 {

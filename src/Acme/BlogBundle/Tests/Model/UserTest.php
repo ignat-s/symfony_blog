@@ -1,8 +1,8 @@
 <?php
 
-namespace Acme\BlogBundle\Tests\Document;
+namespace Acme\BlogBundle\Tests\Model;
 
-use Acme\BlogBundle\Document\User;
+use Acme\BlogBundle\Model\User;
 
 class UserTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,7 +13,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->user = new User();
+        $this->user = $this->getMockForAbstractClass('Acme\BlogBundle\Model\User');
     }
 
     public function testConstructorDefaultValues()
@@ -74,6 +74,8 @@ class UserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider setRolesDataProvider
+     * @param array $actualRoles
+     * @param array $expectedRoles
      */
     public function testSetRoles(array $actualRoles, array $expectedRoles)
     {
@@ -101,6 +103,8 @@ class UserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider hasRolesDataProvider
+     * @param array $actualRoles
+     * @param array $expectedRoles
      */
     public function testHasRoles(array $actualRoles, array $expectedRoles)
     {
@@ -126,6 +130,9 @@ class UserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider removeRolesDataProvider
+     * @param array $actualRoles
+     * @param array $removeRoles
+     * @param array $expectedRoles
      */
     public function testRemoveRoles(array $actualRoles, array $removeRoles, array $expectedRoles)
     {
