@@ -15,7 +15,24 @@ class PostTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->post = $this->getMockForAbstractClass('Acme\BlogBundle\Model\Post');
+        $this->post = $this->createPost();
+    }
+
+    /**
+     * @param string|null $id
+     * @param string|null $title
+     * @return Post|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function createPost($id = null, $title = null)
+    {
+        $result = $this->getMockForAbstractClass('Acme\BlogBundle\Model\Post');
+        if (!is_null($id)) {
+            $result->setId($id);
+        }
+        if (!is_null($title)) {
+            $result->setTitle($title);
+        }
+        return $result;
     }
 
     public function testConstructorDefaultValues()
@@ -144,5 +161,27 @@ class PostTest extends \PHPUnit_Framework_TestCase
         $comment = $this->getMockForAbstractClass('Acme\BlogBundle\Model\Comment');
         $this->post->addComment($comment);
         $this->assertEquals(array($comment), $this->post->getComments());
+    }
+
+    /**
+     * @dataProvider equalsToDataProvider
+     * @param Post $post
+     * @param mixed $otherValue
+     * @param boolean $expectedValue
+     */
+    public function testEqualsTo(Post $post, $otherValue, $expectedValue)
+    {
+        $this->assertEquals($expectedValue, $post->equalsTo($otherValue));
+    }
+
+    public function equalsToDataProvider()
+    {
+        return array(
+            array($this->createPost(1), $this->createPost(1), true),
+            array($this->createPost(1), $this->createPost(2), false),
+            array($this->createPost(1), new \stdClass(), false),
+            array($this->createPost(null, 'Title'), $this->createPost(null, 'Title'), true),
+            array($this->createPost(null, 'Title One'), $this->createPost(null, 'Title Two'), false),
+        );
     }
 }

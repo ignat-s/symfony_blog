@@ -29,8 +29,19 @@ class WebTestCase extends BaseTestCase
             throw new \RuntimeException('Crawler object is not set.');
         }
         if (!$message) {
-            $message = "Crawler doesn't have node: $selector";
+            $message = "Crawler doesn't have expected node: $selector";
         }
         $this->assertGreaterThan(0, $this->crawler->filter($selector)->count(), $message);
+    }
+
+    protected function assertCrawlerNotHasNode($selector, $message = '')
+    {
+        if (!$this->crawler) {
+            throw new \RuntimeException('Crawler object is not set.');
+        }
+        if (!$message) {
+            $message = "Crawler has unexpected node: $selector";
+        }
+        $this->assertEquals(0, $this->crawler->filter($selector)->count(), $message);
     }
 }

@@ -145,7 +145,6 @@ class PostController extends Controller
     /**
      * @Route("/posts/{permalink}/add/comment", name="post_add_comment")
      * @Method("POST")
-     * @Template()
      */
     public function addCommentAction(Request $request, $permalink)
     {
@@ -175,13 +174,19 @@ class PostController extends Controller
             $objectManager->flush();
 
             $session->getFlashBag()->add('success', 'Your comment was added.');
+            return new RedirectResponse(
+                $router->generate('post_show', array('permalink' => $post->getPermalink()))
+            );
         } else {
             $session->getFlashBag()->add('error', 'Sorry, unable to add your comment.');
+            return $this->render(
+                'AcmeBlogBundle:Post:show.html.twig',
+                array(
+                    'post' => $post,
+                    'comment_form' => $form->createView()
+                )
+            );
         }
-
-        return new RedirectResponse(
-            $router->generate('post_show', array('permalink' => $post->getPermalink()))
-        );
     }
 
     private function createCommentForm(Comment $comment)

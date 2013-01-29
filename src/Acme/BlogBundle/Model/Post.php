@@ -39,6 +39,7 @@ abstract class Post
     protected $comments = array();
 
     /**
+     * @Assert\NotBlank()
      * @Assert\Type("DateTime")
      * @var \DateTime
      */
@@ -215,17 +216,17 @@ abstract class Post
     /**
      * Check users are equals
      *
-     * @param mixed $object
-     * @return bool
+     * @param mixed $other
+     * @return boolean
      */
-    public function equalsTo($object)
+    public function equalsTo($other)
     {
-        if ($object instanceof self) {
-            if ($this->id != $object->id) {
-                return false;
-            }
-            return $this === $object;
+        if (!$other instanceof self) {
+            return false;
         }
-        return false;
+        if ($this->id || $other->id) {
+            return $this->id == $other->id;
+        }
+        return $this == $other;
     }
 }
