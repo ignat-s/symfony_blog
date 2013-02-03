@@ -13,6 +13,7 @@ abstract class Comment
     protected $body;
 
     /**
+     * @Assert\NotBlank()
      * @Assert\Email()
      * @var string
      */

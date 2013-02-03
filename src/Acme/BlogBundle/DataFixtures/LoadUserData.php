@@ -1,5 +1,5 @@
 <?php
-namespace Acme\BlogBundle\DataFixtures\MongoDB;
+namespace Acme\BlogBundle\DataFixtures;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -7,7 +7,7 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Acme\BlogBundle\Document\User;
+use Acme\BlogBundle\Model\User;
 use Acme\BlogBundle\Model\UserManager;
 
 class LoadUserData extends AbstractFixture implements FixtureInterface, ContainerAwareInterface, OrderedFixtureInterface

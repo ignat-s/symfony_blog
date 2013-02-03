@@ -18,7 +18,7 @@ mongodb_server and mongodb_database database_paths are correct.
 
 Also change secret parameter with other unique value.
 
-Step 2: Get [Composer][1]
+Step 2: Get [composer][1]
 
 Composer is a tool for dependency management in PHP. It allows you to declare the dependent libraries your project needs
 and it will install them in your project for you.

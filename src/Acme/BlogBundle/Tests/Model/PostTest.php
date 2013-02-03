@@ -2,6 +2,7 @@
 
 namespace Acme\BlogBundle\Tests\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Acme\BlogBundle\Model\User;
 use Acme\BlogBundle\Model\Comment;
 use Acme\BlogBundle\Model\Post;
@@ -15,7 +16,24 @@ class PostTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->post = $this->getMockForAbstractClass('Acme\BlogBundle\Model\Post');
+        $this->post = $this->createPost();
+    }
+
+    /**
+     * @param string|null $id
+     * @param string|null $title
+     * @return Post|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function createPost($id = null, $title = null)
+    {
+        $result = $this->getMockForAbstractClass('Acme\BlogBundle\Model\Post');
+        if (!is_null($id)) {
+            $result->setId($id);
+        }
+        if (!is_null($title)) {
+            $result->setTitle($title);
+        }
+        return $result;
     }
 
     public function testConstructorDefaultValues()
@@ -26,7 +44,8 @@ class PostTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->post->getPermalink());
         $this->assertInstanceOf('DateTime', $this->post->getPublicationDate());
         $this->assertEquals(array(), $this->post->getTags());
-        $this->assertEquals(array(), $this->post->getComments());
+        $this->assertInstanceOf('Doctrine\Common\Collections\ArrayCollection', $this->post->getComments());
+        $this->assertEmpty($this->post->getComments()->getValues());
     }
 
     public function testId()
@@ -100,49 +119,32 @@ class PostTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('TDD', 'unit testing', 'tdd'), $this->post->getTags());
     }
 
-    /**
-     * @dataProvider getTagsStringDataProvider
-     * @param array $actual
-     * @param string $expected
-     */
-    public function testGetTagsString(array $actual, $expected)
-    {
-        $this->post->setTags($actual);
-        $this->assertEquals($expected, $this->post->getTagsString());
-    }
-
-    public function getTagsStringDataProvider()
-    {
-        return array(
-            array(array(), ''),
-            array(array('foo', 'bar'), 'foo, bar'),
-        );
-    }
-
-    /**
-     * @dataProvider setTagsStringDataProvider
-     * @param string $actual
-     * @param array $expected
-     */
-    public function testSetTagsString($actual, array $expected)
-    {
-        $this->post->setTagsString($actual);
-        $this->assertEquals($expected, $this->post->getTags());
-    }
-
-    public function setTagsStringDataProvider()
-    {
-        return array(
-            array('', array()),
-            array('foo, bar', array('foo', 'bar')),
-            array('foo, bar, bar, baz', array('foo', 'bar', 'baz')),
-        );
-    }
-
     public function testComments()
     {
         $comment = $this->getMockForAbstractClass('Acme\BlogBundle\Model\Comment');
         $this->post->addComment($comment);
-        $this->assertEquals(array($comment), $this->post->getComments());
+        $this->assertEquals(new ArrayCollection(array($comment)), $this->post->getComments());
+    }
+
+    /**
+     * @dataProvider equalsToDataProvider
+     * @param Post $post
+     * @param mixed $otherValue
+     * @param boolean $expectedValue
+     */
+    public function testEqualsTo(Post $post, $otherValue, $expectedValue)
+    {
+        $this->assertEquals($expectedValue, $post->equalsTo($otherValue));
+    }
+
+    public function equalsToDataProvider()
+    {
+        return array(
+            array($this->createPost(1), $this->createPost(1), true),
+            array($this->createPost(1), $this->createPost(2), false),
+            array($this->createPost(1), new \stdClass(), false),
+            array($this->createPost(null, 'Title'), $this->createPost(null, 'Title'), true),
+            array($this->createPost(null, 'Title One'), $this->createPost(null, 'Title Two'), false),
+        );
     }
 }

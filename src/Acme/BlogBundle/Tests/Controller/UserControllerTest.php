@@ -27,7 +27,7 @@ class UserControllerTest extends WebTestCase
         $this->assertCrawlerHasNode('form input[type="checkbox"][required="required"][name="registration[terms]"]');
     }
 
-    public function testSignUpActionSubmitNewUser()
+    public function testSignUpActionSubmitSuccessful()
     {
         $client = static::createClient();
 
@@ -72,7 +72,6 @@ class UserControllerTest extends WebTestCase
         );
 
         $client = static::createClient();
-        $client->followRedirects(true);
 
         $crawler = $client->request('GET', '/signup');
 

@@ -1,5 +1,5 @@
 <?php
-namespace Acme\BlogBundle\DataFixtures\MongoDB;
+namespace Acme\BlogBundle\DataFixtures;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -8,7 +8,8 @@ use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Acme\BlogBundle\Model\PostManager;
-use Acme\BlogBundle\Document\Post;
+use Acme\BlogBundle\Model\Post;
+use Acme\BlogBundle\Model\User;
 
 class LoadPostData extends AbstractFixture implements FixtureInterface, ContainerAwareInterface, OrderedFixtureInterface
 {
@@ -27,21 +28,42 @@ class LoadPostData extends AbstractFixture implements FixtureInterface, Containe
      */
     public function load(ObjectManager $manager)
     {
-        $post = new Post();
-        $post->setTitle('Unit testing');
-        $post->setBody(
+        $post = $this->createPost(
+            'Unit testing',
             'The goal of unit testing is to isolate each part '
-            . 'of the program and show that the individual parts are correct.'
+            . 'of the program and show that the individual parts are correct.',
+            array('TDD', 'unit testing'),
+            $this->getReference('user')
         );
-        $post->addTag('TDD');
-        $post->addTag('unit testing');
-
-        $post->setAuthor($this->getReference('user'));
-
-        $this->postManager->updatePermalink($post);
-
         $manager->persist($post);
+
+        $post = $this->createPost(
+            'Functional testing',
+            'Functional testing is a type of black box testing'
+            . ' that bases its test cases on the specifications of the software component under test.',
+            array('TDD', 'functional testing'),
+            $this->getReference('user')
+        );
+        $manager->persist($post);
+
         $manager->flush();
+    }
+
+    /**
+     * @param string $title
+     * @param string $body
+     * @param array $tags
+     * @param User $author
+     * @return Post
+     */
+    private function createPost($title, $body, array $tags, User $author)
+    {
+        $post = $this->postManager->createPost($author);
+        $post->setTitle($title);
+        $post->setBody($body);
+        $post->setTags($tags);
+        $this->postManager->updatePermalink($post);
+        return $post;
     }
 
     /**

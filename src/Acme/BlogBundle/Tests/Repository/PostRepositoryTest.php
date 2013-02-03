@@ -1,20 +1,20 @@
 <?php
 
-namespace Acme\BlogBundle\Tests\Respository\MongoDB;
+namespace Acme\BlogBundle\Tests\Respository;
 
-use Doctrine\ODM\MongoDB\DocumentManager;
-use Acme\BlogBundle\Repository\MongoDB\PostRepository;
+use Doctrine\Common\Persistence\ObjectManager;
+use Acme\BlogBundle\Repository\PostRepositoryInterface;
 use Acme\BlogBundle\Test\WebTestCase;
 
 class PostRepositoryTest extends WebTestCase
 {
     /**
-     * @var DocumentManager
+     * @var ObjectManager
      */
-    private $dm;
+    private $objectManager;
 
     /**
-     * @var PostRepository
+     * @var PostRepositoryInterface
      */
     private $repository;
 
@@ -25,11 +25,10 @@ class PostRepositoryTest extends WebTestCase
     {
         static::$kernel = static::createKernel();
         static::$kernel->boot();
-        $this->dm = static::$kernel->getContainer()
-            ->get('doctrine_mongodb')
-            ->getManager();
+        $this->objectManager = static::$kernel->getContainer()
+            ->get('acme_blog.object_manager');
 
-        $this->repository = $this->dm->getRepository('AcmeBlogBundle:Post');
+        $this->repository = $this->objectManager->getRepository('AcmeBlogBundle:Post');
     }
 
     /**
@@ -39,7 +38,7 @@ class PostRepositoryTest extends WebTestCase
     {
         $post = $this->repository->findOneByPermalink($searchPermalink);
         $this->assertNotNull($post);
-        $this->assertInstanceOf('Acme\BlogBundle\Document\Post', $post);
+        $this->assertInstanceOf('Acme\BlogBundle\Model\Post', $post);
         $this->assertEquals($expectedTitle, $post->getTitle());
         $this->assertEquals($expectedPermalink, $post->getPermalink());
     }
