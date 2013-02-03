@@ -31,9 +31,13 @@
             <directory>../src</directory>
             <exclude>
                 <directory>../src/*/*Bundle/Resources</directory>
+                <directory>../src/*/*Bundle/Test</directory>
                 <directory>../src/*/*Bundle/Tests</directory>
+                <directory>../src/*/*Bundle/DataFixtures</directory>
                 <directory>../src/*/Bundle/*Bundle/Resources</directory>
+                <directory>../src/*/Bundle/*Bundle/Test</directory>
                 <directory>../src/*/Bundle/*Bundle/Tests</directory>
+                <directory>../src/*/Bundle/*Bundle/DataFixtures</directory>
             </exclude>
         </whitelist>
     </filter>

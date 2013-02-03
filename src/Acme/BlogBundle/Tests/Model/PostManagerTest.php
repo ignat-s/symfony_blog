@@ -61,18 +61,16 @@ class PostManagerTest extends \PHPUnit_Framework_TestCase
         return $this->getMockForAbstractClass('Acme\BlogBundle\Model\Post');
     }
 
-    public function testAddNewPostComment()
+    public function testCreatePostComment()
     {
         $expectedComment = $this->createComment();
-        $post = $this->createPost();
 
         $this->domainFactory->expects($this->once())
             ->method('createComment')
             ->will($this->returnValue($expectedComment));
 
-        $actualComment = $this->postManager->addNewPostComment($post);
+        $actualComment = $this->postManager->createPostComment();
         $this->assertSame($expectedComment, $actualComment);
-        $this->assertEquals(array($expectedComment), $post->getComments());
     }
 
     /**

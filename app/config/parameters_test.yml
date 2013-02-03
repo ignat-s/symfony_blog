@@ -1,0 +1,3 @@
+parameters:
+    database_name:    symfony_blog_test
+    mongodb_database: symfony_blog_test

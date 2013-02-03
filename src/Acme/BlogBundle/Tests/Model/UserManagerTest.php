@@ -107,6 +107,22 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($user, $this->userManager->loadUserByUsername($usernameOrEmail));
     }
 
+    /**
+     * @expectedException \Symfony\Component\Security\Core\Exception\UsernameNotFoundException
+     * @expectedExceptionMessage No user "test" was found.
+     */
+    public function testLoadUserByUsernameFails()
+    {
+        $usernameOrEmail = 'test';
+
+        $this->repository->expects($this->once())
+            ->method('findOneByUsernameOrEmail')
+            ->with($usernameOrEmail)
+            ->will($this->returnValue(null));
+
+        $this->userManager->loadUserByUsername($usernameOrEmail);
+    }
+
     public function testRefreshUser()
     {
         $user = $this->createUser();
@@ -121,6 +137,24 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($refreshedUser));
 
         $this->assertSame($refreshedUser, $this->userManager->refreshUser($user));
+    }
+
+    /**
+     * @expectedException \Symfony\Component\Security\Core\Exception\UsernameNotFoundException
+     * @expectedExceptionMessage User with ID "user_id" could not be reloaded.
+     */
+    public function testRefreshUserFails()
+    {
+        $user = $this->createUser();
+        $userId = 'user_id';
+        $user->setId($userId);
+
+        $this->repository->expects($this->once())
+            ->method('findOneBy')
+            ->with(array('id' => $userId))
+            ->will($this->returnValue(null));
+
+        $this->userManager->refreshUser($user);
     }
 
     /**
