@@ -2,6 +2,7 @@
 
 namespace Acme\BlogBundle\Tests\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Acme\BlogBundle\Model\User;
 use Acme\BlogBundle\Model\Comment;
 use Acme\BlogBundle\Model\Post;
@@ -43,7 +44,8 @@ class PostTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->post->getPermalink());
         $this->assertInstanceOf('DateTime', $this->post->getPublicationDate());
         $this->assertEquals(array(), $this->post->getTags());
-        $this->assertEquals(array(), $this->post->getComments());
+        $this->assertInstanceOf('Doctrine\Common\Collections\ArrayCollection', $this->post->getComments());
+        $this->assertEmpty($this->post->getComments()->getValues());
     }
 
     public function testId()
@@ -117,50 +119,11 @@ class PostTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('TDD', 'unit testing', 'tdd'), $this->post->getTags());
     }
 
-    /**
-     * @dataProvider getTagsStringDataProvider
-     * @param array $actual
-     * @param string $expected
-     */
-    public function testGetTagsString(array $actual, $expected)
-    {
-        $this->post->setTags($actual);
-        $this->assertEquals($expected, $this->post->getTagsString());
-    }
-
-    public function getTagsStringDataProvider()
-    {
-        return array(
-            array(array(), ''),
-            array(array('foo', 'bar'), 'foo, bar'),
-        );
-    }
-
-    /**
-     * @dataProvider setTagsStringDataProvider
-     * @param string $actual
-     * @param array $expected
-     */
-    public function testSetTagsString($actual, array $expected)
-    {
-        $this->post->setTagsString($actual);
-        $this->assertEquals($expected, $this->post->getTags());
-    }
-
-    public function setTagsStringDataProvider()
-    {
-        return array(
-            array('', array()),
-            array('foo, bar', array('foo', 'bar')),
-            array('foo, bar, bar, baz', array('foo', 'bar', 'baz')),
-        );
-    }
-
     public function testComments()
     {
         $comment = $this->getMockForAbstractClass('Acme\BlogBundle\Model\Comment');
         $this->post->addComment($comment);
-        $this->assertEquals(array($comment), $this->post->getComments());
+        $this->assertEquals(new ArrayCollection(array($comment)), $this->post->getComments());
     }
 
     /**

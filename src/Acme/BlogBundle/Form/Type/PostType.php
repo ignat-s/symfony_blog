@@ -26,9 +26,13 @@ class PostType extends AbstractType
             array('label' => 'form.post.publicationDate')
         );
         $builder->add(
-            'tagsString',
-            'text',
-            array('label' => 'form.post.tags')
+            'tags',
+            'text_list',
+            array(
+                'separator' => ', ',
+                'unique_values' => true,
+                'label' => 'form.post.tags'
+            )
         );
     }
 

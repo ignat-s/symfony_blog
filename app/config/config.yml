@@ -67,6 +67,19 @@ doctrine_mongodb:
     document_managers:
         default:
             auto_mapping: true
+doctrine:
+    dbal:
+        driver:   "%database_driver%"
+        host:     "%database_host%"
+        port:     "%database_port%"
+        dbname:   "%database_name%"
+        user:     "%database_user%"
+        password: "%database_password%"
+        charset:  UTF8
+
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        auto_mapping: true
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -98,3 +111,9 @@ services:
         class: Twig_Extensions_Extension_Text
         tags:
             - { name: twig.extension }
+
+
+acme_blog:
+    doctrine:
+        type: doctrine_mongodb
+        manager_name: default

@@ -43,13 +43,11 @@ class PostManager
     /**
      * Creates and adds new comment to post
      *
-     * @param Post $post
      * @return Comment
      */
-    public function addNewPostComment(Post $post)
+    public function createPostComment()
     {
         $comment = $this->domainFactory->createComment();
-        $post->addComment($comment);
         return $comment;
     }
 

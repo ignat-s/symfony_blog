@@ -1,5 +1,5 @@
 <?php
-namespace Acme\BlogBundle\DataFixtures\MongoDB;
+namespace Acme\BlogBundle\DataFixtures;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;

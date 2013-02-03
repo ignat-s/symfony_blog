@@ -2,6 +2,7 @@
 
 namespace Acme\BlogBundle\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 abstract class Post
@@ -34,12 +35,12 @@ abstract class Post
     protected $tags = array();
 
     /**
-     * @var array
+     * @var ArrayCollection
      */
     protected $comments = array();
 
     /**
-     * @Assert\NotBlank()
+     *
      * @Assert\Type("DateTime")
      * @var \DateTime
      */
@@ -53,6 +54,7 @@ abstract class Post
 
     public function __construct()
     {
+        $this->comments = new ArrayCollection();
         $this->publicationDate = new \DateTime();
     }
 
@@ -121,22 +123,6 @@ abstract class Post
     }
 
     /**
-     * @return string
-     */
-    public function getTagsString()
-    {
-        return implode(', ', $this->tags);
-    }
-
-    /**
-     * @param string $tagsString
-     */
-    public function setTagsString($tagsString)
-    {
-        $this->setTags(explode(', ', $tagsString));
-    }
-
-    /**
      * @return array
      */
     public function getTags()
@@ -160,13 +146,40 @@ abstract class Post
      */
     public function addTag($tag)
     {
-        if ($tag && !in_array($tag, $this->tags)) {
-            $this->tags[] = $tag;
+        if ($tag && !$this->hasTag($tag)) {
+            $this->appendTag($tag);
+        }
+    }
+
+    protected function hasTag($tag)
+    {
+        return false !== $this->getTagPosition($tag);
+    }
+
+    protected function getTagPosition($tag)
+    {
+        return array_search($tag, $this->tags);
+    }
+
+    protected function appendTag($tag)
+    {
+        $this->tags[] = $tag;
+    }
+
+    /**
+     * @param string $tag
+     */
+    public function removeTag($tag)
+    {
+        $position = $this->getTagPosition($tag);
+        if (false !== $position) {
+            unset($this->tags[$position]);
+            $this->tags = array_values($this->tags);
         }
     }
 
     /**
-     * @return array
+     * @return ArrayCollection
      */
     public function getComments()
     {
@@ -178,7 +191,7 @@ abstract class Post
      */
     public function addComment(Comment $comment)
     {
-        $this->comments[] = $comment;
+        $this->comments->add($comment);
     }
 
     /**
@@ -217,7 +230,7 @@ abstract class Post
      * Check users are equals
      *
      * @param mixed $other
-     * @return boolean
+     * @return bool
      */
     public function equalsTo($other)
     {

@@ -10,9 +10,7 @@ use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Routing\Router;
 use Doctrine\Common\Persistence\ObjectManager;
 use Acme\BlogBundle\Model\UserManager;
 use Acme\BlogBundle\Model\User;
@@ -58,8 +56,6 @@ class UserController extends Controller
         $userManager = $this->get('acme_blog.user_manager');
         /** @var ObjectManager $objectManager */
         $objectManager = $this->get('acme_blog.object_manager');
-        /** @var Router $router */
-        $router = $this->get('router');
 
         $user = $userManager->createUser();
         $form = $this->createForm(
@@ -78,7 +74,7 @@ class UserController extends Controller
                 $this->authenticateUser($user);
 
                 $session->getFlashBag()->add('success', 'Welcome, you have successfully signed up!');
-                return new RedirectResponse($router->generate('posts_index'));
+                return $this->redirect($this->generateUrl('posts_index'));
             } else {
                 $session->getFlashBag()->add('error', 'Sorry, sign up failed.');
             }

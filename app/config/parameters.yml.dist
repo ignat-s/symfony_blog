@@ -1,11 +1,21 @@
 parameters:
-    mongodb_server: mongodb://localhost:27017
-    mongodb_database: symfony_blog
-    mongodb_options: {}
-    mailer_transport: smtp
-    mailer_host: 127.0.0.1
-    mailer_user: null
-    mailer_password: null
-    locale: en
-    secret: ac7ee437141588cfeca210cb8714bf1b1
-    database_path: null
+    # Doctrine ORM configuration
+    #database_driver:    pdo_mysql
+    #database_host:      127.0.0.1
+    #database_port:      ~
+    #database_name:      symfony_blog
+    #database_user:      root
+    #database_password:  root
+
+    # Doctrine MongoDB configuration
+    #mongodb_server:     mongodb://localhost:27017
+    #mongodb_database:   symfony_blog
+    #mongodb_options:    {}
+
+    mailer_transport:   smtp
+    mailer_host:        127.0.0.1
+    mailer_user:        null
+    mailer_password:    null
+
+    locale:             en
+    secret:             ThisTokenIsNotSoSecretChangeIt

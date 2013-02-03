@@ -11,9 +11,6 @@ use Acme\BlogBundle\Model\User as AbstractUser;
  */
 class User extends AbstractUser
 {
-    const ROLE_USER = 'ROLE_USER';
-    const ROLE_ADMIN = 'ROLE_ADMIN';
-
     /**
      * @MongoDB\Id
      */

@@ -205,6 +205,7 @@ class PostControllerTest extends WebTestCase
             '.content:contains("The goal of unit testing is to isolate each part '
             . 'of the program and show that the individual parts are correct.")'
         );
+        $this->assertCrawlerHasNode('.content:contains("Your comment was added.")');
         $this->assertCrawlerHasNode('.content a[href="email:john.doe@example.com"]:contains("John Doe")');
         $this->assertCrawlerHasNode('.content:contains("This comment created by automated test.")');
     }

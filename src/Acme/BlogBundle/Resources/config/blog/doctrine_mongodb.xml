@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="acme_blog.user.class">Acme\BlogBundle\Document\User</parameter>
+        <parameter key="acme_blog.user_repository.class">Acme\BlogBundle\Repository\MongoDB\UserRepository</parameter>
+        <parameter key="acme_blog.post.class">Acme\BlogBundle\Document\Post</parameter>
+        <parameter key="acme_blog.post_repository.class">Acme\BlogBundle\Repository\MongoDB\PostRepository</parameter>
+        <parameter key="acme_blog.domain_factory.class">Acme\BlogBundle\Document\DomainFactory</parameter>
+    </parameters>
+
+    <services>
+
+        <service id="acme_blog.object_manager"
+                 factory-service="doctrine_mongodb"
+                 factory-method="getManager"
+                 class="Doctrine\Common\Persistence\ObjectManager">
+            <argument>%acme_blog.doctrine.manager_name%</argument>
+        </service>
+
+    </services>
+
+</container>

@@ -4,11 +4,8 @@ namespace Acme\BlogBundle\Controller;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\SecurityContextInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Router;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -86,8 +83,6 @@ class PostController extends Controller
         $objectManager = $this->get('acme_blog.object_manager');
         /** @var PostManager $postManager */
         $postManager = $this->get('acme_blog.post_manager');
-        /** @var Router $router */
-        $router = $this->get('router');
 
         $post = $postManager->createPost($securityContext->getToken()->getUser());
         $form = $this->createForm(
@@ -104,8 +99,8 @@ class PostController extends Controller
                 $objectManager->flush();
 
                 $session->getFlashBag()->add('success', 'New post created.');
-                return new RedirectResponse(
-                    $router->generate('post_show', array('permalink' => $post->getPermalink()))
+                return $this->redirect(
+                    $this->generateUrl('post_show', array('permalink' => $post->getPermalink()))
                 );
             } else {
                 $session->getFlashBag()->add('error', 'Errors occurred while creating new post.');
@@ -133,12 +128,12 @@ class PostController extends Controller
         $post = $repository->findOneByPermalink($permalink);
 
         if (!$post) {
-            throw new NotFoundHttpException('Post not found.');
+            throw $this->createNotFoundException('Post not found.');
         }
 
         return array(
             'post' => $post,
-            'comment_form' => $this->createCommentForm($postManager->addNewPostComment($post))->createView()
+            'comment_form' => $this->createCommentForm($postManager->createPostComment())->createView()
         );
     }
 
@@ -150,8 +145,6 @@ class PostController extends Controller
     {
         /** @var Session $session */
         $session = $this->get('session');
-        /** @var Router $router */
-        $router = $this->get('router');
         /** @var PostManager $postManager */
         $postManager = $this->get('acme_blog.post_manager');
         /** @var ObjectManager $objectManager */
@@ -161,21 +154,22 @@ class PostController extends Controller
         $post = $repository->findOneByPermalink($permalink);
 
         if (!$post) {
-            throw new NotFoundHttpException('Post not found.');
+            throw $this->createNotFoundException('Post not found.');
         }
 
-        $comment = $postManager->addNewPostComment($post);
+        $comment = $postManager->createPostComment();
 
         $form = $this->createCommentForm($comment);
         $form->bind($request);
 
         if ($form->isValid()) {
+            $post->addComment($comment);
             $objectManager->persist($comment);
             $objectManager->flush();
 
             $session->getFlashBag()->add('success', 'Your comment was added.');
-            return new RedirectResponse(
-                $router->generate('post_show', array('permalink' => $post->getPermalink()))
+            return $this->redirect(
+                $this->generateUrl('post_show', array('permalink' => $post->getPermalink()))
             );
         } else {
             $session->getFlashBag()->add('error', 'Sorry, unable to add your comment.');
